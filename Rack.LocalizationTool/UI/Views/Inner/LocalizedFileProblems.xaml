@@ -1,0 +1,220 @@
+﻿<UserControl x:Class="Rack.LocalizationTool.UI.Views.Inner.LocalizedFileProblems"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:localBehaviors="clr-namespace:Rack.LocalizationTool.Infrastructure.Behaviors"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:behaviors1="clr-namespace:Rack.Wpf.Behaviors;assembly=Rack.Wpf"
+             xmlns:converters="clr-namespace:Rack.Wpf.Converters;assembly=Rack.Wpf"
+             mc:Ignorable="d">
+    <StackPanel>
+        <ListBox Background="{StaticResource PrimaryHueMidBrush}"
+                 Name="ProblemHeader">
+            <b:Interaction.Behaviors>
+                <behaviors1:MouseWheelScrollBehavior />
+            </b:Interaction.Behaviors>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel IsItemsHost="True" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBoxItem Name="NotExistedKeys">
+                <RadioButton
+                    Style="{StaticResource MaterialDesignTabRadioButton}"
+                    Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                    Content="Несуществующие ключи-фразы"
+                    IsChecked="{Binding IsSelected, 
+			RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" />
+            </ListBoxItem>
+            <ListBoxItem Name="PhraseFormatDifferences">
+                <RadioButton
+                    Style="{StaticResource MaterialDesignTabRadioButton}"
+                    Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                    Content="Несогласованность форматирования"
+                    IsChecked="{Binding IsSelected, 
+			RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" />
+            </ListBoxItem>
+        </ListBox>
+        <ContentControl>
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedItem.Name, ElementName=ProblemHeader}"
+                                     Value="NotExistedKeys">
+                            <DataTrigger.Setters>
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <StackPanel>
+                                            <ToolBar>
+                                                <Button Command="{Binding ReplaceNotExistedKeys}"
+                                                        ToolTip="Применить исправления"
+                                                        ToolTipService.InitialShowDelay="100">
+                                                    <materialDesign:PackIcon Kind="FileImport" />
+                                                </Button>
+                                            </ToolBar>
+                                            <StackPanel
+                                                Visibility="{Binding IsNotExistedKeysServiceInitialized, 
+                                                        Converter={converters:BoolToVisibilityConverter}}">
+                                                <ItemsControl ItemsSource="{Binding NotExistedKeys}"
+                                                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                                              Visibility="{Binding IsNotExistedKeysUsed, 
+                                                    Converter={converters:BoolToVisibilityConverter}}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <materialDesign:Card Padding="5"
+                                                                                 Margin="0,10,0,0">
+                                                                <b:Interaction.Behaviors>
+                                                                    <localBehaviors:OpenFileBehavior
+                                                                        FilePath="{Binding FilePath}" />
+                                                                </b:Interaction.Behaviors>
+                                                                <StackPanel>
+                                                                    <Label Content="{Binding RelativePath}"
+                                                                           FontWeight="Bold" />
+                                                                    <ItemsControl
+                                                                        ItemsSource="{Binding NotExistedKeyOptions}">
+                                                                        <ItemsControl.ItemTemplate>
+                                                                            <DataTemplate>
+                                                                                <Grid>
+                                                                                    <Grid.ColumnDefinitions>
+                                                                                        <ColumnDefinition Width="Auto" />
+                                                                                        <ColumnDefinition Width="*" />
+                                                                                    </Grid.ColumnDefinitions>
+                                                                                    <Grid.RowDefinitions>
+                                                                                        <RowDefinition />
+                                                                                        <RowDefinition />
+                                                                                    </Grid.RowDefinitions>
+                                                                                    <Label
+                                                                                        Content="{Binding LocalizedPlace.Row}"
+                                                                                        HorizontalAlignment="Right" />
+                                                                                    <Label
+                                                                                        Content="{Binding LocalizedPlace.FullString}"
+                                                                                        Grid.Column="1" />
+                                                                                    <CheckBox
+                                                                                        IsChecked="{Binding IsChecked}"
+                                                                                        IsEnabled="{Binding IsCheckedEnable}"
+                                                                                        Margin="0,22,4,0"
+                                                                                        HorizontalAlignment="Right"
+                                                                                        Grid.Row="1" />
+                                                                                    <ComboBox
+                                                                                        ItemsSource="{Binding  
+                                                                                    RelativeSource={RelativeSource FindAncestor,
+                                                                                    AncestorType={x:Type UserControl}}, 
+                                                                                    Path=DataContext.KeyPhrases}"
+                                                                                        DisplayMemberPath="Key"
+                                                                                        SelectedValuePath="Key"
+                                                                                        SelectedValue="{Binding NewKey}"
+                                                                                        materialDesign:HintAssist.Hint="{Binding LocalizedPlace.LocalizationKey}"
+                                                                                        Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                                                                        materialDesign:TextFieldAssist.HasClearButton="True"
+                                                                                        IsEditable="True"
+                                                                                        Grid.Row="1"
+                                                                                        Grid.Column="1"
+                                                                                        Margin="0,3,0,5" />
+                                                                                </Grid>
+                                                                            </DataTemplate>
+                                                                        </ItemsControl.ItemTemplate>
+                                                                    </ItemsControl>
+                                                                </StackPanel>
+                                                            </materialDesign:Card>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                                <Label Content="Проблем не обнаружено."
+                                                       FontWeight="Bold"
+                                                       Foreground="Green"
+                                                       Visibility="{Binding IsNotExistedKeysUsed, 
+                                                        Converter={converters:BoolToVisibilityConverter},
+                                                        ConverterParameter=reverse}" />
+                                            </StackPanel>
+                                            <Label Content="Анализ не произведен."
+                                                   FontWeight="Bold"
+                                                   Foreground="Red"
+                                                   Visibility="{Binding IsNotExistedKeysServiceInitialized, 
+                                                        Converter={converters:BoolToVisibilityConverter},
+                                                        ConverterParameter=reverse}" />
+                                        </StackPanel>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding SelectedItem.Name, ElementName=ProblemHeader}"
+                                     Value="PhraseFormatDifferences">
+                            <DataTrigger.Setters>
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <StackPanel>
+                                            <StackPanel
+                                                Visibility="{Binding IsFormatArgumentsInconsistenciesInitialized, 
+                                                        Converter={converters:BoolToVisibilityConverter}}">
+                                                <DataGrid ItemsSource="{Binding FormatArgumentsInconsistencies}"
+                                                          AutoGenerateColumns="False"
+                                                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                                          Visibility="{Binding IsHasFormatArgumentsInconsistencies, 
+                                                    Converter={converters:BoolToVisibilityConverter}}">
+                                                    <b:Interaction.Behaviors>
+                                                        <localBehaviors:OpenFileBehavior
+                                                            FilePath="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=DataGrid}, 
+                                                            Path=SelectedItem.FilePath}" />
+                                                    </b:Interaction.Behaviors>
+                                                    <DataGrid.Columns>
+                                                        <DataGridTextColumn Header="Файл"
+                                                                            Binding="{Binding RelativePath, Mode=OneWay}"
+                                                                            IsReadOnly="True" />
+                                                        <DataGridTextColumn Header="Строка"
+                                                                            Binding="{Binding Row, Mode=OneWay}"
+                                                                            IsReadOnly="True" />
+                                                        <DataGridTextColumn Header="Ключ"
+                                                                            Binding="{Binding Key, Mode=OneWay}"
+                                                                            IsReadOnly="True" />
+                                                        <DataGridTextColumn Header="Аргументы"
+                                                                            Width="500"
+                                                                            Binding="{Binding Arguments, Mode=OneWay}"
+                                                                            IsReadOnly="True">
+                                                            <DataGridTextColumn.ElementStyle>
+                                                                <Style>
+                                                                    <Setter Property="TextBlock.TextWrapping"
+                                                                            Value="Wrap" />
+                                                                    <Setter Property="TextBlock.TextAlignment"
+                                                                            Value="Center" />
+                                                                </Style>
+                                                            </DataGridTextColumn.ElementStyle>
+                                                        </DataGridTextColumn>
+                                                        <DataGridTextColumn Header="Число аргументов"
+                                                                            Binding="{Binding CurrentArgumentsCount, Mode=OneWay}"
+                                                                            IsReadOnly="True" />
+                                                        <DataGridTextColumn Header="Ожидаемое число"
+                                                                            Binding="{Binding ExpectedArgumentsCount, Mode=OneWay}"
+                                                                            IsReadOnly="True" />
+                                                        <DataGridTextColumn Header="Форматирование"
+                                                                            Binding="{Binding FormatStyle, Mode=OneWay}"
+                                                                            IsReadOnly="True" />
+                                                    </DataGrid.Columns>
+                                                </DataGrid>
+                                                <Label Content="Проблем не обнаружено."
+                                                       FontWeight="Bold"
+                                                       Foreground="Green"
+                                                       Visibility="{Binding IsHasFormatArgumentsInconsistencies, 
+                                                        Converter={converters:BoolToVisibilityConverter},
+                                                        ConverterParameter=reverse}" />
+                                            </StackPanel>
+                                            <Label Content="Анализ не произведен."
+                                                   FontWeight="Bold"
+                                                   Foreground="Red"
+                                                   Visibility="{Binding IsFormatArgumentsInconsistenciesInitialized, 
+                                                        Converter={converters:BoolToVisibilityConverter},
+                                                        ConverterParameter=reverse}" />
+                                        </StackPanel>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,24 @@
+﻿{
+  "Key": "Rack.CrossSectionUtils.Wpf",
+  "Language": "Русский",
+  "LocalizedValues": {
+    "Validation.BottomMustBeLessThanTop": "Нижняя граница разреза не может быть выше верхней.",
+    "Validation.ConflictInLeftBorders": "Существуют несогласованность в левых границах у элементов колонки (границы нескольких элементов пересекаются).",
+    "Validation.ConflictInRightBorders": "Существуют несогласованность в правых границах у элементов колонки (границы нескольких элементов пересекаются).",
+    "Validation.DecorationColumnsWidthMustBeGreaterThanOneMillimeter": "Ширина колонок оформления должна быть не меньше 1 мм.",
+    "Validation.DecorationHeadersHeightMustBeGreaterThanOneMillimeter": "Высота заголовков колонок оформления должна быть не меньше 1 мм.",
+    "Validation.HeaderShouldBeNotEmpty": "Заголовок должен быть указан.",
+    "Validation.HorizontalResolutionMustBeGreaterThanZero": "Разрешение по горизонтали должно быть больше нуля.",
+    "Validation.HorizontalScaleMustBeGreaterThanZero": "Масштаб по горизонтали должен быть больше нуля.",
+    "Validation.HorizontalScaleMustBeFinite": "Масштаб по горизонтали должен быть конечным числом.",
+    "Validation.LeftBottomMustBeLessThanLeftTop": "Левая нижняя граница должна быть ниже левой верхней границы.",
+    "Validation.LeftTopMustBeGreaterThanLeftBottom": "Левая верхняя граница должна быть выше левой нижней границы.",
+    "Validation.OffsetMustBeGreaterThanZero": "Расстояние отступа не может быть отрицательным числом.",
+    "Validation.RightBottomMustBeLessThanRightTop": "Правая нижняя граница должна быть ниже правой верхней границы.",
+    "Validation.RightTopMustBeGreaterThanRightBottom": "Правая верхняя граница должна быть выше правой нижней границы.",
+    "Validation.TopMustBeGreaterThanBottom": "Верхняя граница разреза не может быть ниже нижней.",
+    "Validation.VerticalResolutionMustBeGreaterThanZero": "Разрешение по вертикали должно быть больше нуля.",
+    "Validation.VerticalScaleMustBeGreaterThanZero": "Масштаб по вертикали должен быть больше нуля.",
+    "Validation.VerticalScaleMustBeFinite": "Масштаб по вертикали должен быть конечным числом."
+  }
+}

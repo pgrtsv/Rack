@@ -1,0 +1,75 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <UseWPF>true</UseWPF>
+        <AssemblyName>Rack</AssemblyName>
+        <RootNamespace>Rack</RootNamespace>
+        <LangVersion>8</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Dragablz" version="0.0.3.203" />
+        <PackageReference Include="GitVersionTask" Version="5.3.7">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="MahApps.Metro" version="2.2.0" />
+        <PackageReference Include="Markdig.Wpf" Version="0.4.0" />
+        <PackageReference Include="MaterialDesignColors" version="1.2.7" />
+        <PackageReference Include="MaterialDesignThemes" version="3.2.0" />
+        <PackageReference Include="MaterialDesignThemes.MahApps" version="0.1.5" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.8" />
+        <PackageReference Include="Npgsql" version="4.1.5" />
+        <PackageReference Include="ReactiveUI.Fody" Version="11.5.35" />
+        <PackageReference Include="Serilog" Version="2.10.0" />
+        <PackageReference Include="Serilog.Exceptions" Version="5.6.0" />
+        <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+        <PackageReference Include="Splat.DryIoc" Version="9.5.49" />
+        <PackageReference Include="squirrel.windows" version="2.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Rack.GeoTools.Wpf\Rack.GeoTools.Wpf.csproj" />
+        <ProjectReference Include="..\Rack.Localization\Rack.Localization.csproj" />
+        <ProjectReference Include="..\Rack.Shared\Rack.Shared.csproj" />
+        <ProjectReference Include="..\Rack.Wpf\Rack.Wpf.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Resource Include="icon-*.ico" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="HelpFiles\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Changelogs\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="appSettings.Development.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="appSettings.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Localizations\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Modules\ReadMe.md">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="appSettings.Development.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="appSettings.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Changelogs\" />
+    </ItemGroup>
+
+</Project>

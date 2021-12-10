@@ -1,0 +1,144 @@
+﻿<reactiveUi:ReactiveWindow
+    x:TypeArguments="local:MainWindowViewModel"
+    x:Class="Rack.LogViewer.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:Rack.LogViewer"
+    xmlns:dd="urn:gong-wpf-dragdrop"
+    mc:Ignorable="d" Height="450" Width="800"
+    dd:DragDrop.IsDropTarget="True"
+    dd:DragDrop.DropHandler="{Binding}"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:reactiveUi="http://reactiveui.net"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextElement.FontWeight="Regular"
+    TextElement.FontSize="16"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
+    Background="{DynamicResource MaterialDesignPaper}"
+    FontFamily="{DynamicResource MaterialDesignFont}">
+    <DockPanel>
+        <DockPanel.Resources>
+            <DataTemplate DataType="{x:Type system:String}" x:Key="LevelTemplate">
+                <TextBlock>
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignTextBlock}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Mode=OneTime}" Value="Fatal">
+                                    <Setter Property="Foreground" Value="DarkRed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Mode=OneTime}" Value="Error">
+                                    <Setter Property="Foreground" Value="Red" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Mode=OneTime}" Value="Warning">
+                                    <Setter Property="Foreground" Value="Orange" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Mode=OneTime}" Value="Debug">
+                                    <Setter Property="Foreground" Value="Gray" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Mode=OneTime}" Value="Information">
+                                    <Setter Property="Foreground" Value="Green" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                    <materialDesign:PackIcon VerticalAlignment="Center">
+                        <materialDesign:PackIcon.Style>
+                            <Style TargetType="materialDesign:PackIcon">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Mode=OneTime}" Value="Fatal">
+                                        <Setter Property="Kind" Value="LightningBoltCircle" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Mode=OneTime}" Value="Error">
+                                        <Setter Property="Kind" Value="AlertOctagram" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Mode=OneTime}" Value="Warning">
+                                        <Setter Property="Kind" Value="AlertCircle" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Mode=OneTime}" Value="Debug">
+                                        <Setter Property="Kind" Value="LetterDCircle" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Mode=OneTime}" Value="Information">
+                                        <Setter Property="Kind" Value="InfoCircle" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </materialDesign:PackIcon.Style>
+                    </materialDesign:PackIcon>
+                    <Run Text="{Binding Mode=OneTime}" BaselineAlignment="Center" />
+                </TextBlock>
+            </DataTemplate>
+        </DockPanel.Resources>
+        <ProgressBar IsIndeterminate="True"
+                     DockPanel.Dock="Top"
+                     x:Name="ProgressBar" />
+        <TextBox x:Name="FilePathTextBox"
+                 DockPanel.Dock="Top"
+                 materialDesign:HintAssist.Hint="Файл с логами"
+                 materialDesign:HintAssist.IsFloating="True" />
+        <materialDesign:Card
+            Background="{DynamicResource MaterialDesignBackground}"
+            DockPanel.Dock="Top">
+            <Expander Header="Фильтры">
+                <StackPanel>
+                    <ItemsControl x:Name="LevelsItemsControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="local:Level">
+                                <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Value}" ContentTemplate="{StaticResource LevelTemplate}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                <DockPanel>
+                    <ToggleButton x:Name="SortToggleButton"
+                                  Style="{StaticResource MaterialDesignActionToggleButton}"
+                                  DockPanel.Dock="Right">
+                        <materialDesign:PackIcon Kind="SortAscending" />
+                        <materialDesign:ToggleButtonAssist.OnContent>
+                            <materialDesign:PackIcon Kind="SortDescending" />
+                        </materialDesign:ToggleButtonAssist.OnContent>
+                    </ToggleButton>
+                        <ComboBox x:Name="SortComboBox"
+                              materialDesign:HintAssist.Hint="Сортировать по:"
+                              materialDesign:HintAssist.IsFloating="True" />
+                    </DockPanel>
+
+                </StackPanel>
+            </Expander>
+        </materialDesign:Card>
+        <ListView
+            x:Name="LogsListView">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn
+                        DisplayMemberBinding="{Binding Timestamp, StringFormat=dd.MM.yyyy HH:mm}"
+                        Header="Timestamp" />
+                    <GridViewColumn
+                        Header="Level">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <ContentControl Content="{Binding Level.Value}" ContentTemplate="{StaticResource LevelTemplate}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn
+                        DisplayMemberBinding="{Binding MessageTemplate}"
+                        Header="MessageTemplate" />
+                    <GridViewColumn
+                        DisplayMemberBinding="{Binding Exception}"
+                        Header="Exception" />
+                    <GridViewColumn
+                        DisplayMemberBinding="{Binding Properties}"
+                        Header="Properties" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </DockPanel>
+</reactiveUi:ReactiveWindow>

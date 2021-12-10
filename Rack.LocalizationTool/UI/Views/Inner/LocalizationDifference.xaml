@@ -1,0 +1,242 @@
+﻿<UserControl x:Class="Rack.LocalizationTool.UI.Views.Inner.LocalizationDifference"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:localConverters="clr-namespace:Rack.LocalizationTool.Converters"
+             xmlns:localBehaviors="clr-namespace:Rack.LocalizationTool.Infrastructure.Behaviors"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:behaviors="clr-namespace:Rack.Wpf.Behaviors;assembly=Rack.Wpf"
+             xmlns:converters="clr-namespace:Rack.Wpf.Converters;assembly=Rack.Wpf"
+             mc:Ignorable="d"
+             Name="LocalRoot">
+    <StackPanel>
+        <ListBox Background="{StaticResource PrimaryHueMidBrush}"
+                 Name="LocalizationDifferenceHeader">
+            <b:Interaction.Behaviors>
+                <behaviors:MouseWheelScrollBehavior />
+            </b:Interaction.Behaviors>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel IsItemsHost="True" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBoxItem Name="AbsentKeys">
+                <RadioButton
+                    Style="{StaticResource MaterialDesignTabRadioButton}"
+                    Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                    Content="Отсутствующие ключи"
+                    IsChecked="{Binding IsSelected, 
+			RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" />
+            </ListBoxItem>
+            <ListBoxItem Name="PhraseFormatDifferences">
+                <RadioButton
+                    Style="{StaticResource MaterialDesignTabRadioButton}"
+                    Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                    Content="Несогласованность форматирования"
+                    IsChecked="{Binding IsSelected, 
+			RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" />
+            </ListBoxItem>
+        </ListBox>
+        <ContentControl>
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedItem.Name, ElementName=LocalizationDifferenceHeader}"
+                                     Value="AbsentKeys">
+                            <DataTrigger.Setters>
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <StackPanel>
+                                            <ToolBar>
+                                                <Button Command="{Binding ResolveAbsentKeysPhrases}"
+                                                        ToolTip="Записать в файл(ы)"
+                                                        ToolTipService.InitialShowDelay="100">
+                                                    <materialDesign:PackIcon Kind="FileImport" />
+                                                </Button>
+                                            </ToolBar>
+                                            <StackPanel
+                                                Visibility="{Binding IsAbsentKeysServiceInitialized, 
+											Converter={converters:BoolToVisibilityConverter}}">
+                                                <ItemsControl x:Name="AbsentPhrasesKeysListBox"
+                                                              ItemsSource="{Binding AbsentKeys}"
+                                                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                                              Visibility="{Binding IsHasAbsentKeys, 
+										Converter={converters:BoolToVisibilityConverter}}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <materialDesign:Card Padding="5"
+                                                                                 Margin="0,10,0,0">
+                                                                <materialDesign:Card.ContextMenu>
+                                                                    <ContextMenu>
+                                                                        <MenuItem
+                                                                            Command="{Binding
+                                                                            RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},
+                                                                            Path=DataContext.OpenFile}"
+                                                                            CommandParameter="{Binding LocalizationFile.FilePath}"
+                                                                            Header="Открыть...">
+                                                                            <MenuItem.Icon>
+                                                                                <materialDesign:PackIcon
+                                                                                    Kind="FolderOpenOutline" />
+                                                                            </MenuItem.Icon>
+                                                                        </MenuItem>
+                                                                    </ContextMenu>
+                                                                </materialDesign:Card.ContextMenu>
+                                                                <b:Interaction.Behaviors>
+                                                                    <localBehaviors:OpenFileBehavior
+                                                                        FilePath="{Binding LocalizationFile.FilePath}" />
+                                                                </b:Interaction.Behaviors>
+                                                                <StackPanel>
+                                                                    <Label
+                                                                        Content="{Binding LocalizationFile.FileName, 
+														Converter={localConverters:OnlyFileNameConverter}}"
+                                                                        FontWeight="Bold" />
+                                                                    <ItemsControl
+                                                                        ItemsSource="{Binding AbsentKeysPhrases}">
+                                                                        <ItemsControl.ItemTemplate>
+                                                                            <DataTemplate>
+                                                                                <TextBox
+                                                                                    Text="{Binding Phrase, UpdateSourceTrigger=PropertyChanged}"
+                                                                                    materialDesign:HintAssist.Hint="{Binding Key}"
+                                                                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                                                                            </DataTemplate>
+                                                                        </ItemsControl.ItemTemplate>
+                                                                    </ItemsControl>
+                                                                </StackPanel>
+                                                            </materialDesign:Card>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                                <Label Content="Проблем не обнаружено."
+                                                       FontWeight="Bold"
+                                                       Foreground="Green"
+                                                       Visibility="{Binding IsHasAbsentKeys, 
+											Converter={converters:BoolToVisibilityConverter},
+											ConverterParameter=reverse}" />
+                                            </StackPanel>
+                                            <Label Content="Анализ не произведен."
+                                                   FontWeight="Bold"
+                                                   Foreground="Red"
+                                                   Visibility="{Binding IsAbsentKeysServiceInitialized, 
+											Converter={converters:BoolToVisibilityConverter},
+											ConverterParameter=reverse}" />
+                                        </StackPanel>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding SelectedItem.Name, ElementName=LocalizationDifferenceHeader}"
+                                     Value="PhraseFormatDifferences">
+                            <DataTrigger.Setters>
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <StackPanel>
+                                            <StackPanel
+                                                Visibility="{Binding IsPhraseFormatDifferenceServiceInitialized, 
+											Converter={converters:BoolToVisibilityConverter}}">
+                                                <ToolBar>
+                                                    <Button Command="{Binding ApplyPhraseFormatDifferenceSolution}"
+                                                            ToolTip="Применить исправления"
+                                                            ToolTipService.InitialShowDelay="100">
+                                                        <materialDesign:PackIcon Kind="FileImport" />
+                                                    </Button>
+                                                </ToolBar>
+                                                <ItemsControl
+                                                    ItemsSource="{Binding KeyPhraseFormatDifferences}"
+                                                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                                    Visibility="{Binding IsHasPhraseFormatDifference, 
+										Converter={converters:BoolToVisibilityConverter}}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <materialDesign:Card Padding="5"
+                                                                                 Margin="0,10,0,0">
+                                                                <StackPanel>
+                                                                    <CheckBox IsChecked="{Binding IsCheckedForSave}"
+                                                                              Content="{Binding Key}"
+                                                                              FontWeight="Bold"
+                                                                              IsEnabled="{Binding IsCanBeCheckedForSave}" />
+                                                                    <ItemsControl ItemsSource="{Binding Phrases}">
+                                                                        <ItemsControl.ItemTemplate>
+                                                                            <DataTemplate>
+                                                                                <Grid>
+                                                                                    <Grid.ColumnDefinitions>
+                                                                                        <ColumnDefinition Width="*" />
+                                                                                        <ColumnDefinition Width="Auto" />
+                                                                                        <ColumnDefinition Width="Auto" />
+                                                                                    </Grid.ColumnDefinitions>
+                                                                                    <TextBox
+                                                                                        Text="{Binding Phrase, UpdateSourceTrigger=PropertyChanged}"
+                                                                                        materialDesign:HintAssist.Hint="{Binding LocalizationFile.FileName}"
+                                                                                        Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                                                                                    <Button
+                                                                                        Command="{Binding SetSourcePhrase}"
+                                                                                        ToolTip="Вернуть значение из файла"
+                                                                                        ToolTipService.InitialShowDelay="100"
+                                                                                        Grid.Column="1"
+                                                                                        Margin="2,0,2,0">
+                                                                                        <materialDesign:PackIcon
+                                                                                            Kind="Restore" />
+                                                                                        <Button.Style>
+                                                                                            <Style TargetType="Button"
+                                                                                                   BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                                                                                                <Style.Triggers>
+                                                                                                    <DataTrigger
+                                                                                                        Binding="{Binding IsPhraseHasUpdate}"
+                                                                                                        Value="True">
+                                                                                                        <Setter
+                                                                                                            Property="Background"
+                                                                                                            Value="#86C44F" />
+                                                                                                        <Setter
+                                                                                                            Property="BorderBrush"
+                                                                                                            Value="#86C44F" />
+                                                                                                    </DataTrigger>
+                                                                                                </Style.Triggers>
+                                                                                            </Style>
+                                                                                        </Button.Style>
+                                                                                    </Button>
+                                                                                    <Button
+                                                                                        Command="{Binding Source={x:Reference Name=LocalRoot}, Path=DataContext.OpenFile}"
+                                                                                        CommandParameter="{Binding LocalizationFile.FilePath}"
+                                                                                        ToolTip="Открыть"
+                                                                                        ToolTipService.InitialShowDelay="100"
+                                                                                        Grid.Column="2"
+                                                                                        Margin="2,0,2,0">
+                                                                                        <materialDesign:PackIcon
+                                                                                            Kind="FolderOpenOutline" />
+                                                                                    </Button>
+                                                                                </Grid>
+                                                                            </DataTemplate>
+                                                                        </ItemsControl.ItemTemplate>
+                                                                    </ItemsControl>
+                                                                </StackPanel>
+                                                            </materialDesign:Card>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                                <Label Content="Проблем не обнаружено."
+                                                       FontWeight="Bold"
+                                                       Foreground="Green"
+                                                       Visibility="{Binding IsHasPhraseFormatDifference, 
+											Converter={converters:BoolToVisibilityConverter},
+											ConverterParameter=reverse}" />
+                                            </StackPanel>
+                                            <Label Content="Анализ не произведен."
+                                                   FontWeight="Bold"
+                                                   Foreground="Red"
+                                                   Visibility="{Binding IsPhraseFormatDifferenceServiceInitialized, 
+											Converter={converters:BoolToVisibilityConverter},
+											ConverterParameter=reverse}" />
+                                        </StackPanel>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+    </StackPanel>
+</UserControl>

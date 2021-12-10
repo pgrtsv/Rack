@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <UseWPF>true</UseWPF>
+        <LangVersion>8</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="GitVersionTask" Version="5.3.7">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="gong-wpf-dragdrop" Version="2.2.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+        <PackageReference Include="ReactiveUI.WPF" Version="11.5.35" />
+        <PackageReference Include="ReactiveUI.Fody" Version="11.5.35" />
+        <PackageReference Include="MaterialDesignColors" version="1.2.7" />
+        <PackageReference Include="MaterialDesignThemes" version="3.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Page Include="App.xaml" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Rack.Localization\Rack.Localization.csproj" />
+        <ProjectReference Include="..\Rack.Shared\Rack.Shared.csproj" />
+        <ProjectReference Include="..\Rack.Wpf\Rack.Wpf.csproj" />
+    </ItemGroup>
+
+</Project>

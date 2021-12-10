@@ -1,0 +1,63 @@
+﻿<reactiveUi:ReactiveUserControl
+    x:TypeArguments="viewModels:HelpViewModel"
+    x:Class="Rack.Views.Help"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:markdown="clr-namespace:Rack.Markdown"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:reactiveUi="http://reactiveui.net"
+    xmlns:viewModels="clr-namespace:Rack.ViewModels"
+    xmlns:dialogs="clr-namespace:Rack.Wpf.Dialogs;assembly=Rack.Wpf"
+    xmlns:markdig="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <dialogs:Dialog.WindowStyle>
+        <Style TargetType="mah:MetroWindow" BasedOn="{StaticResource {x:Type mah:MetroWindow}}">
+            <Setter Property="Width" Value="600" />
+            <Setter Property="Height" Value="480" />
+            <Setter Property="SizeToContent" Value="Manual" />
+        </Style>
+    </dialogs:Dialog.WindowStyle>
+    <DockPanel>
+        <ListBox 
+            x:Name="ModulesListBox"
+            Background="{DynamicResource PrimaryHueMidBrush}"
+            DockPanel.Dock="Top"
+            materialDesign:ListBoxAssist.IsToggle="True">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <RadioButton
+                        Style="{StaticResource MaterialDesignTabRadioButton}"
+                        Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                        Content="{Binding Name, Mode=OneTime}"
+                        IsChecked="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+        <GroupBox x:Name="PagesGroupBox" DockPanel.Dock="Left"
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                  VerticalAlignment="Top"
+                  Margin="20">
+            <GroupBox.HeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}"
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                </DataTemplate>
+            </GroupBox.HeaderTemplate>
+            <ListBox x:Name="PagesListBox" />
+        </GroupBox>
+        <markdown:MarkdownViewer x:Name="HelpPageMarkdownViewer">
+            <markdown:MarkdownViewer.Resources>
+                <Style TargetType="{x:Type Image}" 
+                       x:Key="{x:Static markdig:Styles.ImageStyleKey}"
+                       BasedOn="{StaticResource {x:Static markdig:Styles.ImageStyleKey}}">
+                    <Setter Property="RenderOptions.BitmapScalingMode" Value="NearestNeighbor" />
+                </Style>
+            </markdown:MarkdownViewer.Resources>
+        </markdown:MarkdownViewer>
+    </DockPanel>
+</reactiveUi:ReactiveUserControl>

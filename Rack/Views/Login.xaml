@@ -1,0 +1,95 @@
+﻿<reactiveUi:ReactiveUserControl
+    x:TypeArguments="viewModels:LoginViewModel"
+    x:Class="Rack.Views.Login"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:reactiveUi="http://reactiveui.net"
+    xmlns:viewModels="clr-namespace:Rack.ViewModels"
+    MinHeight="200"
+    MinWidth="200">
+    <Grid HorizontalAlignment="Center"
+          VerticalAlignment="Center">
+        <Grid.Resources>
+            <Style x:Key="ErrorMessage" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Style.Triggers>
+                    <Trigger Property="Text" Value="">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Trigger>
+                </Style.Triggers>
+                <Setter Property="Foreground" Value="{StaticResource ValidationErrorBrush}" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="TextAlignment" Value="Center" />
+            </Style>
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                <Setter Property="Margin" Value="8" />
+            </Style>
+            <Style TargetType="{x:Type PasswordBox}" BasedOn="{StaticResource MaterialDesignFloatingHintPasswordBox}">
+                <Setter Property="Margin" Value="8" />
+            </Style>
+            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
+                <Setter Property="Margin" Value="8" />
+            </Style>
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignRaisedDarkButton}">
+                <Setter Property="Margin" Value="8" />
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBox
+            x:Name="UsernameTextBox"
+            Grid.Row="0"
+            VerticalContentAlignment="Center">
+            <materialDesign:HintAssist.Hint>
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Account" VerticalAlignment="Center" />
+                    <TextBlock x:Name="UsernameHintTextBlock" VerticalAlignment="Center" />
+                </StackPanel>
+            </materialDesign:HintAssist.Hint>
+        </TextBox>
+
+        <PasswordBox
+            Grid.Row="1"
+            x:Name="PasswordBox"
+            VerticalContentAlignment="Center">
+            <materialDesign:HintAssist.Hint>
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Key" VerticalAlignment="Center" />
+                    <TextBlock x:Name="PasswordHintTextBlock" VerticalAlignment="Center" />
+                </StackPanel>
+            </materialDesign:HintAssist.Hint>
+        </PasswordBox>
+        <TextBlock
+            x:Name="ErrorTextBlock"
+            Grid.Row="2"
+            Grid.Column="0"
+            Style="{StaticResource ErrorMessage}" />
+        <CheckBox
+            x:Name="RememberMeCheckBox"
+            Grid.Row="3"
+            Grid.Column="0"
+            HorizontalAlignment="Center"
+            Margin="5" />
+        <StackPanel
+            Orientation="Horizontal"
+            Grid.Row="4"
+            Grid.Column="0"
+            Margin="10, 5, 10, 10"
+            HorizontalAlignment="Center">
+            <Button
+                x:Name="LoginButton"
+                IsDefault="True" />
+            <ProgressBar
+                x:Name="LoginProgressBar"
+                Style="{StaticResource MaterialDesignCircularProgressBar}"
+                Value="0"
+                IsIndeterminate="True" />
+        </StackPanel>
+    </Grid>
+</reactiveUi:ReactiveUserControl>

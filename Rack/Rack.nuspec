@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<package>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$owners$</authors>
+    <owners>$owners$</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <releaseNotes>$release_notes$</releaseNotes>
+    <description>$description$</description>
+    <language>ru-RU</language>
+    <copyright>Copyright 2018</copyright>
+  </metadata>
+</package>

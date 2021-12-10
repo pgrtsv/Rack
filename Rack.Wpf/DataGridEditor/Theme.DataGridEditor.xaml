@@ -1,0 +1,174 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:wpf="clr-namespace:Rack.Wpf"
+                    xmlns:converters="clr-namespace:Rack.Wpf.Converters"
+                    xmlns:dataGridEditor="clr-namespace:Rack.Wpf.DataGridEditor"
+                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <dataGridEditor:EditingElementToVisibilityConverter x:Key="EditingElementToVisibilityConverter" />
+    <Style x:Key="DataGridRowWithEditor" TargetType="{x:Type DataGridRow}"
+           BasedOn="{StaticResource MaterialDesignDataGridRow}">
+        <Setter Property="ValidationErrorTemplate" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridRow}">
+                    <Border x:Name="DGR_Border" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <SelectiveScrollingGrid>
+                            <SelectiveScrollingGrid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </SelectiveScrollingGrid.ColumnDefinitions>
+                            <SelectiveScrollingGrid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </SelectiveScrollingGrid.RowDefinitions>
+                            <DataGridCellsPresenter Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}"
+                                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            <DataGridDetailsPresenter Grid.Column="1" Grid.Row="1"
+                                                      SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding AreRowDetailsFrozen, ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical}, Converter={x:Static DataGrid.RowDetailsScrollingConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                                      Visibility="{TemplateBinding DetailsVisibility}" />
+                            <ContentControl Grid.Row="2" Grid.ColumnSpan="2"
+                                            Content="{Binding}"
+                                            ContentTemplate="{Binding Path=(dataGridEditor:DataGridEditorAssist.DataTemplate), RelativeSource={RelativeSource AncestorType=DataGrid, AncestorLevel=1}}"
+                                            x:Name="EditorControl">
+                                <ContentControl.Visibility>
+                                    <MultiBinding
+                                        Converter="{StaticResource EditingElementToVisibilityConverter}"
+                                        Mode="OneWay">
+                                        <Binding Path="(dataGridEditor:DataGridEditorAssist.EditingObject)"
+                                                 RelativeSource="{RelativeSource AncestorType=DataGrid, AncestorLevel=1}" />
+                                        <Binding Path="" />
+                                    </MultiBinding>
+                                </ContentControl.Visibility>
+                            </ContentControl>
+                        </SelectiveScrollingGrid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="RectangleFlatToggleButton" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Background" Value="{DynamicResource MaterialDesignToolBackground}" />
+        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignToolForeground}" />
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Grid ClipToBounds="True" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0" To="0.23"
+                                                         Storyboard.TargetProperty="(UIElement.Opacity)" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="CheckStates">
+                                <VisualStateGroup.Transitions>
+                                    <VisualTransition From="*" To="Checked">
+                                        <Storyboard>
+                                            <DoubleAnimationUsingKeyFrames Duration="0:0:0.2"
+                                                                           Storyboard.TargetProperty="ScaleX"
+                                                                           Storyboard.TargetName="CheckedEllipseScale">
+                                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0.0" />
+                                                <LinearDoubleKeyFrame Value="1.0" KeyTime="0:0:0.1" />
+                                            </DoubleAnimationUsingKeyFrames>
+                                            <DoubleAnimationUsingKeyFrames Duration="0:0:0.2"
+                                                                           Storyboard.TargetProperty="ScaleY"
+                                                                           Storyboard.TargetName="CheckedEllipseScale">
+                                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0.0" />
+                                                <LinearDoubleKeyFrame Value="1.0" KeyTime="0:0:0.1" />
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualTransition>
+                                    <VisualTransition From="Checked" To="Unchecked">
+                                        <Storyboard>
+                                            <DoubleAnimationUsingKeyFrames Duration="0:0:0.2"
+                                                                           Storyboard.TargetProperty="ScaleX"
+                                                                           Storyboard.TargetName="CheckedEllipseScale">
+                                                <LinearDoubleKeyFrame Value="1.0" KeyTime="0:0:0.0" />
+                                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0.1" />
+                                            </DoubleAnimationUsingKeyFrames>
+                                            <DoubleAnimationUsingKeyFrames Duration="0:0:0.2"
+                                                                           Storyboard.TargetProperty="ScaleY"
+                                                                           Storyboard.TargetName="CheckedEllipseScale">
+                                                <LinearDoubleKeyFrame Value="1.0" KeyTime="0:0:0.0" />
+                                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0.1" />
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualTransition>
+                                </VisualStateGroup.Transitions>
+                                <VisualState x:Name="Checked">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0" Storyboard.TargetProperty="ScaleX"
+                                                         Storyboard.TargetName="CheckedEllipseScale" To="1.0" />
+                                        <DoubleAnimation Duration="0" Storyboard.TargetProperty="ScaleY"
+                                                         Storyboard.TargetName="CheckedEllipseScale" To="1.0" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Unchecked">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0" Storyboard.TargetProperty="ScaleX"
+                                                         Storyboard.TargetName="CheckedEllipseScale" To="0" />
+                                        <DoubleAnimation Duration="0" Storyboard.TargetProperty="ScaleY"
+                                                         Storyboard.TargetName="CheckedEllipseScale" To="0" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Rectangle Fill="Transparent" x:Name="HoverEllipse" Stroke="Transparent" StrokeThickness="1" />
+                        <Rectangle Fill="{TemplateBinding Background}" x:Name="CheckedEllipse"
+                                   RenderTransformOrigin="0.5, 0.5">
+                            <Rectangle.RenderTransform>
+                                <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.0" ScaleY="1.0"
+                                                x:Name="CheckedEllipseScale" />
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
+                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Stroke" TargetName="HoverEllipse"
+                                    Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <DataTemplate x:Key="DataGridIsEditingColumnCellTemplate">
+        <ToggleButton
+            Style="{StaticResource RectangleFlatToggleButton}"
+            Validation.ErrorTemplate="{x:Null}">
+            <ToggleButton.Resources>
+                <dataGridEditor:EditingObjectToBoolConverter x:Key="EditingObjectToBoolConverter" />
+            </ToggleButton.Resources>
+            <ToggleButton.IsChecked>
+                <MultiBinding Converter="{StaticResource EditingObjectToBoolConverter}"
+                              Mode="TwoWay">
+                    <Binding Path="(dataGridEditor:DataGridEditorAssist.EditingObject)"
+                             RelativeSource="{RelativeSource AncestorType=DataGrid, AncestorLevel=1}"
+                             Mode="TwoWay" />
+                    <Binding Path=""
+                             Mode="OneWay" />
+                </MultiBinding>
+            </ToggleButton.IsChecked>
+            <materialDesign:PackIcon Kind="Edit" />
+        </ToggleButton>
+    </DataTemplate>
+</ResourceDictionary>

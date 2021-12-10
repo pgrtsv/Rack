@@ -1,0 +1,71 @@
+﻿<Window x:Class="Rack.LocalizationTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Rack.LocalizationTool"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:dd="urn:gong-wpf-dragdrop"
+        xmlns:converters="clr-namespace:Rack.Wpf.Converters;assembly=Rack.Wpf"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        dd:DragDrop.IsDropTarget="True"
+        dd:DragDrop.DropHandler="{Binding}"
+        x:Name="Root">
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top">
+            <Button
+                Command="{Binding SetProjectWithDialog}"
+                ToolTip="Выбрать проект для анализа"
+                DockPanel.Dock="Left"
+                Margin="5">
+                <materialDesign:PackIcon Kind="FileExport" />
+            </Button>
+            <TextBox
+                Margin="0,0,0,5"
+                Text="{Binding CurrentProjectPath, Mode=OneWay}"
+                VerticalAlignment="Bottom"
+                IsReadOnly="True"
+                FontWeight="Medium"
+                materialDesign:HintAssist.Hint="Путь к проекту" />
+        </DockPanel>
+        <DockPanel>
+            <ListBox 
+                DockPanel.Dock="Top"
+                ItemsSource="{Binding ProjectViewModels}"
+                SelectedItem="{Binding SelectedProjectViewModel}"
+                Background="{StaticResource PrimaryHueMidBrush}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="local:ProjectViewModel">
+                        <StackPanel Orientation="Horizontal">
+                        <RadioButton
+                            Style="{StaticResource MaterialDesignTabRadioButton}"
+                            Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                            Content="{Binding ProjectName, Mode=OneTime}"
+                            IsChecked="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" />
+                        <Button 
+                            Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                            Padding="0"
+                            Width="20"
+                            Height="20"
+                            Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                            Command="{Binding DataContext.CloseProject, ElementName=Root}"
+                            CommandParameter="{Binding}">
+                            <materialDesign:PackIcon Kind="Close" />
+                        </Button>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+            <local:Project
+                Visibility="{Binding DataContext.IsProjectViewModelSelected, ElementName=Root, Converter={converters:BoolToVisibilityConverter}}" 
+                DataContext="{Binding SelectedProjectViewModel}" />
+        </DockPanel>
+    </DockPanel>
+</Window>
